@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useState, useEffect } from "react";
 import "./App.css";
 import Board from "./components/Board";

@@ -1,4 +1,3 @@
-// src/components/AuthForm.tsx
 import { useState } from "react";
 import {
   createUserWithEmailAndPassword,

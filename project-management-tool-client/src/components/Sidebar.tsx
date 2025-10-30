@@ -1,4 +1,3 @@
-// src/components/Sidebar.tsx
 import type { ProjectType } from "./Card";
 import { DeleteOutline } from "@mui/icons-material";
 import { auth } from "../firebase";

@@ -1,4 +1,3 @@
-// src/components/Column.tsx
 import { useDroppable } from "@dnd-kit/core";
 import type { CardType } from "./Card";
 import Card from "./Card";

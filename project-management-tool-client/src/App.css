@@ -26,3 +26,16 @@
   background-color: #374151; /* A lighter gray for contrast */
   transform: scale(1.02);
 }
+.draggable-item,
+.cursor-grab,
+.cursor-grabbing {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+}

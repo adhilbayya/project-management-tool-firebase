@@ -1,4 +1,3 @@
-// src/components/Board.tsx
 import { useEffect, useState } from "react";
 import type { CardType, ProjectType } from "./Card";
 import Column from "./Column";
@@ -10,6 +9,13 @@ import {
   DragOverlay,
   type DragEndEvent,
   type DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  MouseSensor,
+  TouchSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
 } from "@dnd-kit/core";
 import Card from "./Card";
 import { auth } from "../firebase";
@@ -107,6 +113,21 @@ const Board = ({ isDarkMode, onToggleTheme }: BoardProps) => {
     fetchCards();
   }, [selectedProjectId, user]);
 
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 8, // Prevent accidental drags
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250, // 250ms long-press to start drag (mobile-friendly)
+        tolerance: 5, // 5px wiggle room for imprecise touch
+      },
+    }),
+    useSensor(KeyboardSensor)
+  );
+
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     const fromList = active.data.current?.fromList as string;
@@ -130,7 +151,6 @@ const Board = ({ isDarkMode, onToggleTheme }: BoardProps) => {
     const draggedCard = columns[fromList].find((c) => c._id === cardId);
     if (!draggedCard) return;
 
-    // Optimistic UI
     setColumns((prev) => {
       const from = prev[fromList].filter((c) => c._id !== cardId);
       const to = [
@@ -140,7 +160,6 @@ const Board = ({ isDarkMode, onToggleTheme }: BoardProps) => {
       return { ...prev, [fromList]: from, [toList]: to };
     });
 
-    // API Update
     try {
       await api(`/cards/projects/${selectedProjectId}/cards/${cardId}`, {
         method: "PUT",
@@ -148,7 +167,6 @@ const Board = ({ isDarkMode, onToggleTheme }: BoardProps) => {
       });
     } catch (err: unknown) {
       console.error("Failed to update card:", err);
-      // Optional: revert state
     }
   };
 
@@ -228,7 +246,11 @@ const Board = ({ isDarkMode, onToggleTheme }: BoardProps) => {
     return <div className="text-center text-red-500 p-10">{error}</div>;
 
   return (
-    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
       <div className="flex h-screen">
         <Sidebar
           projects={projects}

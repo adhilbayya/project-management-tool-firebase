@@ -1,4 +1,3 @@
-// dbController.js
 const Card = require("./card");
 const Project = require("./project");
 
